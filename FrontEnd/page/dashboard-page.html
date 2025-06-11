@@ -1,0 +1,452 @@
+<!-- Dashboard Page HTML converted from Dash Python code, using Bootstrap -->
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Monitoring Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: #f5f7fa; }
+        .card { margin-bottom: 1.2rem; }
+        .table thead th { background: #f8fafc; color: #64748b; }
+        .table td, .table th { vertical-align: middle; }
+        .bg-navbar { background: #1e3a8a; }
+        .navbar-brand, .nav-link, .navbar-text { color: #fff !important; }
+        .fw-bold { font-weight: bold; }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg" style="background:#1C3782;height:60px;width:100%;position:fixed;top:0;left:0;z-index:1000;">
+      <div class="container-fluid">
+        <!-- Brand -->
+        <a class="navbar-brand ms-2 fs-3 fw-semibold text-white d-flex align-items-center" href="/page/dashboard-page.html">
+          <i class="fas fa-tachometer-alt me-2"></i> 5G Network Monitor
+        </a>
+        <!-- Center Nav -->
+        <div class="mx-auto d-flex gap-4">
+          <a class="nav-link text-light fs-5" href="dashboard-page.html">WORKPLACE</a>
+          <a class="nav-link text-light fs-5" href="about-page.html">ABOUT</a>
+        </div>
+        <!-- Right Nav -->
+        <div class="d-flex align-items-center ms-auto">
+          <span id="navbar-username" class="text-white me-3" style="font-size:20px;">Welcome, User !</span>
+          <button class="btn btn-outline-light me-2" id="logout-button" style="height:3rem;width:auto;">LOG OUT</button>
+        </div>
+      </div>
+    </nav>
+    <div class="container-fluid mt-4 bg-white" style="padding-top: 5rem !important;">
+        <div class="row">
+            <!-- Left Column -->
+            <div class="col-lg-3">
+                <!-- Network Controls Card -->
+                <div class="card shadow-sm">
+                    <div class="card-header fw-bold">Network Controls</div>
+                    <div class="card-body">
+                        <form id="network-controls-form">
+                            <div class="mb-3 row align-items-center">
+                                <label for="interface-input" class="col-form-label col-4">Interface</label>
+                                <div class="col-8">
+                                    <input type="text" class="form-control" id="interface-input" placeholder="eth0" value="any">
+                                </div>
+                            </div>
+                            <div class="mb-3 row align-items-center">
+                                <label for="time-input" class="col-form-label col-4">Time Range</label>
+                                <div class="col-8">
+                                    <input type="text" class="form-control" id="time-input" placeholder="30">
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-center mt-4">
+                                <button type="button" class="btn btn-primary w-50" id="start-button">START</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- Packet Summary Card -->
+                <div class="card shadow-sm">
+                    <div class="card-header fw-bold">Flow Summary</div>
+                    <div class="card-body">
+                        <div class="row mb-2">
+                            <div class="col-8">Number Flow Captured:</div>
+                            <div class="col-4 text-end fw-bold" id="packet-count">0</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-8">Total Bytes:</div>
+                            <div class="col-4 text-end fw-bold" id="total-bytes">0 KB</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-8">Lost:</div>
+                            <div class="col-4 text-end fw-bold text-danger" id="lost-packets">0</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-8">Duration:</div>
+                            <div class="col-4 text-end fw-bold" id="duration">00:00:00</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Detection Results Card -->
+                <div class="card shadow-sm">
+                    <div class="card-header fw-bold">Detection Results</div>
+                    <div class="card-body" id="detection-results">
+                        Vui lòng chọn một mẫu để xem kết quả phát hiện.
+                    </div>
+                </div>
+                <!-- Copyright Info -->
+                <div class="card border-secondary rounded bg-transparent mt-3">
+                    <div class="card-body text-center">
+                        <div class="text-secondary small">© MAY - 2025 <span class="fw-bold">VIETHOANG / BACAN</span></div>
+                        <div class="text-center mt-2">
+                            <a href="#" class="mx-1 text-decoration-none text-muted small">UNIVERSITY OF INFORMATION TECHNOLOGY</a><br>
+                            <a href="#" class="mx-1 text-decoration-none text-muted small d-block d-md-inline">FACULTY OF COMPUTER NETWORK AND COMMUNICATION</a>
+                        </div>
+                        <div class="text-center mt-3">
+                            <a href="https://www.linkedin.com/school/university-of-information-technology" class="mx-2" target="_blank"><i class="fab fa-linkedin fa-lg"></i></a>
+                            <a href="https://www.facebook.com/UIT.Fanpage" class="mx-2" target="_blank"><i class="fab fa-facebook fa-lg"></i></a>
+                            <a href="https://www.uit.edu.vn/" class="mx-2" target="_blank"><i class="fa fa-globe fa-lg"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Right Column -->
+            <div class="col-lg-9">
+                <!-- Initial Traffic Table -->
+                <div class="card shadow-sm mt-4 mt-lg-0">
+                    <div class="card-header fw-bold">Initial Traffic</div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover table-sm" id="initial-traffic-table">
+                                <thead>
+                                    <tr>
+                                    <th>Proto</th>
+                                    <th>AckDat</th>
+                                    <th>sHops</th>
+                                    <th>Seq</th>
+                                    <th>State</th>
+                                    <th>TcpRtt</th>
+                                    <th>dMeanPktSz</th>
+                                    <th>Offset</th>
+                                    <th>sTtl</th>
+                                    <th>Flgs</th>
+                                    <th>Mean</th>
+                                    <th>Cause</th>
+                                    <th>SrcTCPBase</th>
+                                    <th>DstLoss</th>
+                                    <th>sMeanPktSz</th>
+                                    <th>Loss</th>
+                                    <th>dTtl</th>
+                                    <th>SrcBytes</th>
+                                    <th>TotBytes</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Dữ liệu sẽ được thêm vào đây thông qua JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- Thêm div cho phân trang -->
+                        <div id="initial-traffic-pagination" class="d-flex justify-content-center mt-2"></div>
+                    </div>
+                </div>
+                <!-- Processed Traffic Table -->
+                <div class="card shadow-sm mt-4">
+                    <div class="card-header fw-bold">Processed Traffic</div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover table-sm" id="processed-traffic-table">
+                                <thead>
+                                    <tr>
+                                        <th>tcp</th><th>AckDat</th><th>sHops</th><th>Seq</th><th>RST</th><th>TcpRtt</th><th>REQ</th><th>dMeanPktSz</th><th>Offset</th><th>CON</th><th>FIN</th><th>sTtl</th><th>e</th><th>INT</th><th>Mean</th><th>Status</th><th>icmp</th><th>SrcTCPBase</th><th>e d</th><th>sMeanPktSz</th><th>DstLoss</th><th>Loss</th><th>dTtl</th><th>SrcBytes</th><th>TotBytes</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Dữ liệu sẽ được thêm vào đây thông qua JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- Sau bảng Processed Traffic -->
+                        <div id="processed-traffic-pagination" class="d-flex justify-content-center mt-2"></div>
+                    </div>
+                </div>
+                <!-- Sample Prediction Table -->
+                <div class="card shadow-sm mt-4">
+                    <div class="card-header fw-bold">Sample Prediction</div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover table-sm" id="sample-prediction-table">
+                                <thead>
+                                    <tr>
+                                        <th>sample_index</th><th>time</th><th>label</th><th>attack_type</th><th>attack_tool</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Dữ liệu sẽ được thêm vào đây thông qua JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- Sau bảng Sample Prediction -->
+                        <div id="sample-prediction-pagination" class="d-flex justify-content-center mt-2"></div>
+                    </div>
+                </div>
+            </div> 
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script>
+        document.getElementById("start-button").addEventListener("click", function () {
+            const interfaceValue = document.getElementById("interface-input").value.trim();
+            const timeValue = document.getElementById("time-input").value.trim();
+
+            console.log("Interface:", interfaceValue);
+            console.log("Time Range:", timeValue);
+
+            fetch("/api/capture", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    interface: interfaceValue,
+                    time: timeValue
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Server response:", data);
+            });
+        });
+      // Kiểm tra đăng nhập và lấy username
+        fetch('/api/user')
+            .then(res => {
+            if (res.status !== 200) window.location.href = 'login-page.html';
+            return res.json();
+            })
+            .then(data => {
+            if (data.username) {
+                document.getElementById('navbar-username').textContent = `Welcome, ${data.username} !`;
+            }
+            });
+        // Xử lý logout
+        document.getElementById('logout-button').onclick = function() {
+            fetch('/api/logout', {method: 'POST'})
+            .then(() => window.location.href = 'login-page.html');
+        };
+        // Dữ liệu và biến phân trang cho từng bảng
+        let initialTrafficData = [], initialTrafficPage = 1, initialTrafficPageSize = 5;
+        let processedTrafficData = [], processedTrafficPage = 1, processedTrafficPageSize = 5;
+        let samplePredictionData = [], samplePredictionPage = 1, samplePredictionPageSize = 5;
+
+        // Hàm render dữ liệu vào bảng Initial Traffic
+        function renderInitialTrafficTable() {
+            const tbody = document.querySelector('#initial-traffic-table tbody');
+            tbody.innerHTML = '';
+            const start = (initialTrafficPage - 1) * initialTrafficPageSize;
+            const pageData = initialTrafficData.slice(start, start + initialTrafficPageSize);
+            pageData.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${row.Proto ?? ''}</td>
+                    <td>${row.AckDat ?? ''}</td>
+                    <td>${row.sHops ?? ''}</td>
+                    <td>${row.Seq ?? ''}</td>
+                    <td>${row.State ?? ''}</td>
+                    <td>${row.TcpRtt ?? ''}</td>
+                    <td>${row.dMeanPktSz ?? ''}</td>
+                    <td>${row.Offset ?? ''}</td>
+                    <td>${row.sTtl ?? ''}</td>
+                    <td>${row.Flgs ?? ''}</td>
+                    <td>${row.Mean ?? ''}</td>
+                    <td>${row.Cause ?? ''}</td>
+                    <td>${row.SrcTCPBase ?? ''}</td>
+                    <td>${row.DstLoss ?? ''}</td>
+                    <td>${row.sMeanPktSz ?? ''}</td>
+                    <td>${row.Loss ?? ''}</td>
+                    <td>${row.dTtl ?? ''}</td>
+                    <td>${row.SrcBytes ?? ''}</td>
+                    <td>${row.TotBytes ?? ''}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+            renderInitialTrafficPagination();
+        }
+        // Hàm phân trang Initial Traffic
+        function renderInitialTrafficPagination() {
+            const totalPages = Math.ceil(initialTrafficData.length / initialTrafficPageSize);
+            const pagination = document.getElementById('initial-traffic-pagination');
+            pagination.innerHTML = '';
+            for (let i = 1; i <= totalPages; i++) {
+                const btn = document.createElement('button');
+                btn.textContent = i;
+                btn.className = 'btn btn-sm btn-outline-primary mx-1' + (i === initialTrafficPage ? ' active' : '');
+                btn.onclick = () => { initialTrafficPage = i; renderInitialTrafficTable(); };
+                pagination.appendChild(btn);
+            }
+        }
+
+        // Hàm render dữ liệu vào bảng Processed Traffic
+        function renderProcessedTrafficTable() {
+            const tbody = document.querySelector('#processed-traffic-table tbody');
+            tbody.innerHTML = '';
+            const start = (processedTrafficPage - 1) * processedTrafficPageSize;
+            const pageData = processedTrafficData.slice(start, start + processedTrafficPageSize);
+            pageData.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${row.tcp || 0 }</td>
+                    <td>${row.AckDat || 0}</td>
+                    <td>${row.sHops || 0}</td>
+                    <td>${row.Seq || 0}</td>
+                    <td>${row.RST || 0}</td>
+                    <td>${row.TcpRtt || 0}</td>
+                    <td>${row.REQ || 0}</td>
+                    <td>${row.dMeanPktSz || 0}</td>
+                    <td>${row.Offset || 0}</td>
+                    <td>${row.CON || 0}</td>
+                    <td>${row.FIN || 0}</td>
+                    <td>${row.sTtl || 0}</td>
+                    <td>${row.e || 0}</td>
+                    <td>${row.INT || 0}</td>
+                    <td>${row.Mean || 0}</td>
+                    <td>${row.Status || 0}</td>
+                    <td>${row.icmp || 0}</td>
+                    <td>${row.SrcTCPBase || 0}</td>
+                    <td>${row['ed'] || 0}</td>
+                    <td>${row.sMeanPktSz || 0}</td>
+                    <td>${row.DstLoss || 0}</td>
+                    <td>${row.Loss || 0}</td>
+                    <td>${row.dTtl || 0}</td>
+                    <td>${row.SrcBytes || 0}</td>
+                    <td>${row.TotBytes || 0}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+            renderProcessedTrafficPagination();
+        }
+        // Hàm phân trang Processed Traffic
+        function renderProcessedTrafficPagination() {
+            const totalPages = Math.ceil(processedTrafficData.length / processedTrafficPageSize);
+            const pagination = document.getElementById('processed-traffic-pagination');
+            pagination.innerHTML = '';
+            for (let i = 1; i <= totalPages; i++) {
+                const btn = document.createElement('button');
+                btn.textContent = i;
+                btn.className = 'btn btn-sm btn-outline-primary mx-1' + (i === processedTrafficPage ? ' active' : '');
+                btn.onclick = () => { processedTrafficPage = i; renderProcessedTrafficTable(); };
+                pagination.appendChild(btn);
+            }
+        }
+
+        // Hàm render dữ liệu vào bảng Sample Prediction
+        function renderSamplePredictionTable() {
+            const tbody = document.querySelector('#sample-prediction-table tbody');
+            tbody.innerHTML = '';
+            const start = (samplePredictionPage - 1) * samplePredictionPageSize;
+            const pageData = samplePredictionData.slice(start, start + samplePredictionPageSize);
+            pageData.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${row.sample_index || ''}</td>
+                    <td>${row.time || ''}</td>
+                    <td class="${row.label === 'Malicious' ? 'text-danger fw-bold' : ''}">${row.label || ''}</td>
+                    <td>${row.attack_type || ''}</td>
+                    <td>${row.attack_tool || ''}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+            renderSamplePredictionPagination();
+        }
+        // Hàm phân trang Sample Prediction
+        function renderSamplePredictionPagination() {
+            const totalPages = Math.ceil(samplePredictionData.length / samplePredictionPageSize);
+            const pagination = document.getElementById('sample-prediction-pagination');
+            pagination.innerHTML = '';
+            for (let i = 1; i <= totalPages; i++) {
+                const btn = document.createElement('button');
+                btn.textContent = i;
+                btn.className = 'btn btn-sm btn-outline-primary mx-1' + (i === samplePredictionPage ? ' active' : '');
+                btn.onclick = () => { samplePredictionPage = i; renderSamplePredictionTable(); };
+                pagination.appendChild(btn);
+            }
+        }
+
+        // Hàm render Flow Summary
+        function renderPacketSummary(data) {
+            document.getElementById('packet-count').textContent = data.total_flows || 0;
+            document.getElementById('total-bytes').textContent = (data.total_bytes || 0) + ' KB';
+            document.getElementById('lost-packets').textContent = data.lost || 0;
+            document.getElementById('duration').textContent = data.capture_duration || '00:00:00';
+        }
+
+        // Hàm render Detection Results
+        function renderDetectionResults(alerts) {
+            const container = document.getElementById('detection-results');
+            if (!alerts || alerts.length === 0) {
+                container.innerHTML = "Vui lòng chọn một mẫu để xem kết quả phát hiện.";
+                return;
+            }
+            container.innerHTML = alerts.map(alert => `
+                <div class="alert alert-${alert.label === 'Benign' ? 'success' : 'danger'} mb-2">
+                    <h6 class="alert-heading">Alert: ${alert.label}</h6>
+                    <p class="mb-0"><span class="fw-bold">Attack Type: </span>${alert.attack_type}</p>
+                    <p class="mb-0"><span class="fw-bold">Attack Tool: </span>${alert.attack_tool}</p>
+                    <p class="mb-0"><span class="fw-bold">Timestamp: </span>${alert.time}</p>
+                </div>
+            `).join('');
+        }
+
+        // Thêm sự kiện click cho bảng Sample Prediction
+        document.addEventListener('DOMContentLoaded', function () {
+            refreshDashboardData();
+            // Xử lý click trên bảng Sample Prediction
+            document.querySelector('#sample-prediction-table tbody').addEventListener('click', function (e) {
+                let tr = e.target.closest('tr');
+                if (!tr) return;
+                let sampleIndex = tr.querySelector('td')?.textContent;
+                if (!sampleIndex) return;
+                fetch(`/api/detection_results/${sampleIndex}`)
+                    .then(res => res.json())
+                    .then(data => renderDetectionResults(data));
+            });
+        });
+        // Hàm render phân trang cho bảng Initial Traffic
+        function renderInitialTrafficPagination() {
+            const totalPages = Math.ceil(initialTrafficData.length / initialTrafficPageSize);
+            const pagination = document.getElementById('initial-traffic-pagination');
+            pagination.innerHTML = '';
+            for (let i = 1; i <= totalPages; i++) {
+                const btn = document.createElement('button');
+                btn.textContent = i;
+                btn.className = 'btn btn-sm btn-outline-primary mx-1' + (i === initialTrafficPage ? ' active' : '');
+                btn.onclick = () => {
+                    initialTrafficPage = i;
+                    renderInitialTrafficTable();
+                };
+                pagination.appendChild(btn);
+            }
+        }
+        // Hàm fetch và render toàn bộ dashboard
+        function refreshDashboardData() {
+            fetch('/api/raw_network_traffic')
+                .then(res => res.json())
+                .then(data => { initialTrafficData = data; initialTrafficPage = 1; renderInitialTrafficTable(); });
+
+            fetch('/api/processed_network_traffic')
+                .then(res => res.json())
+                .then(data => { processedTrafficData = data; processedTrafficPage = 1; renderProcessedTrafficTable(); });
+
+            fetch('/api/sample_prediction')
+                .then(res => res.json())
+                .then(data => { samplePredictionData = data; samplePredictionPage = 1; renderSamplePredictionTable(); });
+
+            fetch('/api/packet_summary')
+                .then(res => res.json())
+                .then(data => renderPacketSummary(data));
+        }
+        window.addEventListener('DOMContentLoaded', function () {
+            refreshDashboardData();
+        });
+    </script>
+</body>
+</html>

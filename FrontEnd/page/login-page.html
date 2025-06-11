@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>5G Network Monitor</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .login-box { max-width: 400px; margin: 100px auto; padding: 2rem; background: #fff; border-radius: 10px; box-shadow: 0 0 10px #ccc; }
+        .logo { text-align: center; margin-bottom: 1rem; }
+        .logo i { font-size: 60px; color: #1C3782; }
+    </style>
+</head>
+<body style="background: #f5f7fa;">
+<div class="login-box">
+    <div class="logo">
+      <i class="fas fa-server"></i>
+    </div>
+    <h2 class="text-center mb-4">Network Monitoring Dashboard</h2>
+    <div id="message-area" class="mb-3 text-danger"></div>
+    <form id="login-form">
+      <div class="mb-3">
+        <label for="username" class="form-label">Tên đăng nhập</label>
+        <input type="text" class="form-control" id="username" placeholder="Nhập tên đăng nhập" required>
+      </div>
+      <div class="mb-3">
+        <label for="password" class="form-label">Mật khẩu</label>
+        <div class="input-group">
+          <input type="password" class="form-control" id="password" placeholder="Nhập mật khẩu" required>
+          <button class="btn btn-outline-secondary" type="button" id="toggle-password"><i class="fas fa-eye"></i></button>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary w-100" id="login-btn">Đăng nhập</button>
+    </form>
+    <div class="mt-3 text-center">
+      <span class="text-success">Trạng thái: Đang hoạt động</span>
+      <div id="current-time" class="text-muted small"></div>
+    </div>
+</div>
+<script>
+    // Hiển thị thời gian thực
+    setInterval(() => {
+      const now = new Date();
+      const datetime = now.toLocaleString('vi-VN');
+      document.getElementById('current-time').textContent = datetime;
+    }, 1000);
+
+    // Toggle password visibility
+    document.getElementById('toggle-password').onclick = function() {
+      const pw = document.getElementById('password');
+      pw.type = pw.type === 'password' ? 'text' : 'password';
+    };
+
+    // Xử lý login
+    document.getElementById('login-form').onsubmit = function(e) {
+      e.preventDefault();
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      fetch('/api/login', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({username, password})
+      })
+      .then(res => {
+        if (!res.ok) return res.json().then(data => {throw data;});
+        return res.json();
+      })
+      .then(data => {
+        window.location.href = 'dashboard-page.html';
+      })
+      .catch(err => {
+        document.getElementById('message-area').textContent = err.message || 'Đăng nhập thất bại!';
+      });
+    };
+</script>
+</body>
+</html>

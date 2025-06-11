@@ -1,0 +1,169 @@
+<!-- About Page HTML converted from Dash Python code, using Bootstrap -->
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - 5G Network Monitor</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: #f5f7fa; }
+        .card { margin-bottom: 1.2rem; }
+        .bg-navbar { background: #1e3a8a; }
+        .navbar-brand, .nav-link, .navbar-text { color: #fff !important; }
+        .fw-bold { font-weight: bold; }
+        .about-card { height: 200px; }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg" style="background:#1C3782;height:60px;width:100%;position:fixed;top:0;left:0;z-index:1000;">
+      <div class="container-fluid">
+        <!-- Brand -->
+        <a class="navbar-brand ms-2 fs-3 fw-semibold text-white d-flex align-items-center" href="dashboard-page.html">
+          <i class="fas fa-tachometer-alt me-2"></i> 5G Network Monitor
+        </a>
+        <!-- Center Nav -->
+        <div class="mx-auto d-flex gap-4">
+          <a class="nav-link text-light fs-5" href="dashboard-page.html">WORKPLACE</a>
+          <a class="nav-link text-light fs-5" href="about-page.html">ABOUT</a>
+        </div>
+        <!-- Right Nav -->
+        <div class="d-flex align-items-center ms-auto">
+          <span id="navbar-username" class="text-white me-3" style="font-size:20px;">Welcome, User !</span>
+          <button class="btn btn-outline-light me-2" id="logout-button" style="height:3rem;width:auto;">LOG OUT</button>
+        </div>
+      </div>
+    </nav>
+    <script>
+      // Kiểm tra đăng nhập và lấy username
+      fetch('/api/user')
+        .then(res => {
+          if (res.status !== 200) window.location.href = 'login-page.html';
+          return res.json();
+        })
+        .then(data => {
+          if (data.username) {
+            document.getElementById('navbar-username').textContent = `Welcome, ${data.username} !`;
+          }
+        });
+      // Xử lý logout
+      document.getElementById('logout-button').onclick = function() {
+        fetch('/api/logout', {method: 'POST'})
+          .then(() => window.location.href = 'login-page.html');
+      };
+    </script>
+    <div class="container-fluid py-3 mt-5 bg-white">
+        <div class="row g-4 mt-5 align-items-stretch">
+            <!-- Left Column -->
+            <div class="col-lg-6 d-flex flex-column gap-4">
+                <!-- Introduction Card -->
+                <div class="card shadow-sm about-card">
+                    <div class="card-body">
+                        <strong class="mb-3 d-block">1. Introduction</strong>
+                        <p style="text-align:justify;">
+                            5G Network Monitor is a comprehensive 5G network monitoring and analysis system, designed to provide an overview of the performance, security, and operations of the 5G network system.
+                        </p>
+                        <p style="text-align:justify;">
+                            The system enables network administrators to monitor key metrics in real-time, detect and alert on security threats, as well as analyze network usage trends.
+                        </p>
+                    </div>
+                </div>
+                <!-- Main Features Card -->
+                <div class="card shadow-sm about-card">
+                    <div class="card-body">
+                        <strong class="mb-3 d-block">3. Main Features</strong>
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <i class="fas fa-chart-line fa-2x text-success mb-2"></i>
+                                <h6 class="text-primary fw-bold">Real-time Monitoring</h6>
+                                <p class="small">Continuously monitor network traffic, performance, and other critical metrics in real-time.</p>
+                            </div>
+                            <div class="col-4">
+                                <i class="fas fa-shield-alt fa-2x text-warning mb-2"></i>
+                                <h6 class="text-primary fw-bold">Security Alerts</h6>
+                                <p class="small">Detect and provide early warnings of security threats and abnormal activities.</p>
+                            </div>
+                            <div class="col-4">
+                                <i class="fas fa-chart-area fa-2x text-info mb-2"></i>
+                                <h6 class="text-primary fw-bold">Data Analysis</h6>
+                                <p class="small">Analyze trends, generate reports, and provide insights to optimize the network.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 d-flex flex-column gap-4">
+                <div class="card shadow-sm about-card">
+                    <div class="card-body">
+                        <strong class="mb-3 d-block">2. Technologies Used</strong>
+                        <div class="row text-center">
+                            <div class="col-3">
+                                <i class="fas fa-cloud-meatball fa-2x text-info mb-1 mt-3"></i>
+                                <h6 class="text-secondary">5G Network</h6>
+                                <p><a href="https://free5gc.org/" target="_blank" class="fw-bold text-decoration-none text-primary">free5GC</a></p>
+                            </div>
+                            <div class="col-3">
+                                <i class="fas fa-laptop-code fa-2x text-info mb-1 mt-3"></i>
+                                <h6 class="text-secondary">Network Tool</h6>
+                                <p><a href="https://openargus.org/" target="_blank" class="fw-bold text-decoration-none text-primary">Argus Tool</a></p>
+                            </div>
+                            <div class="col-3">
+                                <i class="fas fa-database fa-2x text-info mb-1 mt-3"></i>
+                                <h6 class="text-secondary">Model</h6>
+                                <p><a href="https://scikit-learn.org/stable/modules/ensemble.html#random-forests" target="_blank" class="fw-bold text-decoration-none text-primary">Random Forest</a></p>
+                            </div>
+                            <div class="col-3">
+                                <i class="fas fa-sync fa-2x text-info mb-1 mt-3"></i>
+                                <h6 class="text-secondary">Framework</h6>
+                                <p>
+                                    <a href="https://www.python.org/" target="_blank" class="fw-bold text-decoration-none text-primary me-1">Python</a>,
+                                    <a href="https://flask.palletsprojects.com/en/stable/" target="_blank" class="fw-bold text-decoration-none text-primary me-1">Flask</a>,
+                                    <a href="https://www.geeksforgeeks.org/html/html-introduction/" target="_blank" class="fw-bold text-decoration-none text-primary">HTML</a>,
+                                    <a href="https://www.javascript.com/" target="_blank" class="fw-bold text-decoration-none text-primary">Javascript</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Contact Card -->
+                <div class="card shadow-sm about-card">
+                    <div class="card-body">
+                        <strong class="mb-3 d-block">4. Contact</strong>
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <i class="fas fa-envelope fa-2x text-primary mb-2"></i>
+                                <h6 class="fw-bold text-primary">Email</h6>
+                                <p class="small mb-1"><a href="mailto:22520471@gm.uit.edu.vn" class="text-decoration-none">22520471@gm.uit.edu.vn</a></p>
+                                <p class="small"><a href="mailto:22520143@gm.uit.edu.vn" class="text-decoration-none">22520143@gm.uit.edu.vn</a></p>
+                            </div>
+                            <div class="col-4">
+                                <i class="fas fa-phone fa-2x text-primary mb-2"></i>
+                                <h6 class="fw-bold text-primary">Phone Number</h6>
+                                <p class="small mb-1">098 730 8446</p>
+                                <p class="small">035 279 9826</p>
+                            </div>
+                            <div class="col-4">
+                                <i class="fab fa-github fa-2x text-dark mb-2"></i>
+                                <h6 class="fw-bold text-primary">Repository</h6>
+                                <a href="https://github.com/VietHoang30-23VH/5G_Project_Final" target="_blank" class="small text-decoration-none" style="color:black;">https://github.com/VietHoang30-23VH/5G_Project_Final</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Back to Dashboard Button -->
+        <div class="row mt-5 mb-3 justify-content-center">
+            <div class="col-5 text-center">
+                <a href="dashboard-page.html" class="btn btn-primary btn-lg shadow">
+                    <i class="fas fa-arrow-left me-2"></i>Quay về Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+</body>
+</html>
