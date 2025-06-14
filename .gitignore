@@ -1,0 +1,83 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Virtual environment
+env/
+venv/
+ENV/
+
+# VS Code settings
+.vscode/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# SQLite database file
+*.db
+
+# Machine learning model files
+*.pkl
+*.h5
+*.pt
+*.onnx
+
+# Datasets or output results
+CSV/
+prediction_results.txt
+
+# Logs and other runtime files
+*.log
+*.out
+*.pid
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Python wheels
+*.whl
+
+# Installers
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+sdist/
+develop-eggs/
+
+# Test/coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.cache
+.pytest_cache/
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+
+# MyPy
+.mypy_cache/
+
+# Pyre
+.pyre/
+
+# Pylint
+pylint-report.txt
+
+*.csv
+
+Dockerfile
+
+*.yaml
+
+*.pyc
