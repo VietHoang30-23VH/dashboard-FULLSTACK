@@ -18,24 +18,24 @@
 </head>
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg" style="background:#1C3782;height:60px;width:100%;position:fixed;top:0;left:0;z-index:1000;">
-      <div class="container-fluid">
-        <!-- Brand -->
-        <a class="navbar-brand ms-2 fs-3 fw-semibold text-white d-flex align-items-center" href="dashboard-page.html">
-          <i class="fas fa-tachometer-alt me-2"></i> 5G Network Monitor
-        </a>
-        <!-- Center Nav -->
-        <div class="mx-auto d-flex gap-4">
-          <a class="nav-link text-light fs-5" href="dashboard-page.html">WORKPLACE</a>
-          <a class="nav-link text-light fs-5" href="about-page.html">ABOUT</a>
-        </div>
-        <!-- Right Nav -->
-        <div class="d-flex align-items-center ms-auto">
-          <span id="navbar-username" class="text-white me-3" style="font-size:20px;">Welcome, User !</span>
-          <button class="btn btn-outline-light me-2" id="logout-button" style="height:3rem;width:auto;">LOG OUT</button>
-        </div>
-      </div>
-    </nav>
+<nav class="navbar navbar-expand-lg" style="background:#1C3782;height:60px;width:100%;position:fixed;top:0;left:0;z-index:1000;">
+  <div class="container-fluid position-relative">
+    <!-- Brand -->
+    <a class="navbar-brand ms-2 fs-3 fw-semibold text-white d-flex align-items-center" href="dashboard-page.html">
+      <i class="fas fa-tachometer-alt me-2"></i> 5G Network Monitor
+    </a>
+    <!-- Center Nav -->
+    <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);" class="d-flex gap-4">
+      <a class="nav-link text-light fs-5" href="dashboard-page.html">WORKPLACE</a>
+      <a class="nav-link text-light fs-5" href="about-page.html">ABOUT</a>
+    </div>
+    <!-- Right Nav -->
+    <div class="d-flex align-items-center ms-auto">
+      <span id="navbar-username" class="text-white me-3" style="font-size:20px;">Welcome, User !</span>
+      <button class="btn btn-outline-light me-2" id="logout-button" style="height:3rem;width:auto;">LOG OUT</button>
+    </div>
+  </div>
+</nav>
     <script>
       // Kiểm tra đăng nhập và lấy username
       fetch('/api/user')
@@ -135,8 +135,8 @@
                             <div class="col-4">
                                 <i class="fas fa-envelope fa-2x text-primary mb-2"></i>
                                 <h6 class="fw-bold text-primary">Email</h6>
-                                <p class="small mb-1"><a href="mailto:22520471@gm.uit.edu.vn" class="text-decoration-none">22520471@gm.uit.edu.vn</a></p>
-                                <p class="small"><a href="mailto:22520143@gm.uit.edu.vn" class="text-decoration-none">22520143@gm.uit.edu.vn</a></p>
+                                <p class="small mb-1"><a href="mailto:22520471@gm.uit.edu.vn" class="text-decoration-none" style="color:black;">22520471@gm.uit.edu.vn</a></p>
+                                <p class="small"><a href="mailto:22520143@gm.uit.edu.vn" class="text-decoration-none" style="color:black;">22520143@gm.uit.edu.vn</a></p>
                             </div>
                             <div class="col-4">
                                 <i class="fas fa-phone fa-2x text-primary mb-2"></i>
@@ -147,7 +147,7 @@
                             <div class="col-4">
                                 <i class="fab fa-github fa-2x text-dark mb-2"></i>
                                 <h6 class="fw-bold text-primary">Repository</h6>
-                                <a href="https://github.com/VietHoang30-23VH/5G_Project_Final" target="_blank" class="small text-decoration-none" style="color:black;">https://github.com/VietHoang30-23VH/5G_Project_Final</a>
+                                <a href="https://github.com/VietHoang30-23VH/dashboard-FULLSTACK.git" target="_blank" class="small text-decoration-none" style="color:black;">https://github.com/VietHoang30-23VH/dashboard-FULLSTACK.git</a>
                             </div>
                         </div>
                     </div>

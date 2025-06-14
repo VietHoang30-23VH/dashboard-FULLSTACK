@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Network Monitoring Dashboard</title>
+    <title>Network Monitoring bacan</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -20,17 +20,17 @@
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg" style="background:#1C3782;height:60px;width:100%;position:fixed;top:0;left:0;z-index:1000;">
-      <div class="container-fluid">
-        <!-- Brand -->
-        <a class="navbar-brand ms-2 fs-3 fw-semibold text-white d-flex align-items-center" href="/page/dashboard-page.html">
+      <div class="container-fluid position-relative">
+    <!-- Brand -->
+        <a class="navbar-brand ms-2 fs-3 fw-semibold text-white d-flex align-items-center" href="dashboard-page.html">
           <i class="fas fa-tachometer-alt me-2"></i> 5G Network Monitor
         </a>
-        <!-- Center Nav -->
-        <div class="mx-auto d-flex gap-4">
+    <!-- Center Nav -->
+        <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);" class="d-flex gap-4">
           <a class="nav-link text-light fs-5" href="dashboard-page.html">WORKPLACE</a>
           <a class="nav-link text-light fs-5" href="about-page.html">ABOUT</a>
         </div>
-        <!-- Right Nav -->
+    <!-- Right Nav -->
         <div class="d-flex align-items-center ms-auto">
           <span id="navbar-username" class="text-white me-3" style="font-size:20px;">Welcome, User !</span>
           <button class="btn btn-outline-light me-2" id="logout-button" style="height:3rem;width:auto;">LOG OUT</button>
@@ -96,7 +96,7 @@
                 <!-- Copyright Info -->
                 <div class="card border-secondary rounded bg-transparent mt-3">
                     <div class="card-body text-center">
-                        <div class="text-secondary small">© MAY - 2025 <span class="fw-bold">VIETHOANG / BACAN</span></div>
+                        <div class="text-secondary small">© JUNE - 2025 <span class="fw-bold">VIETHOANG / BACAN</span></div>
                         <div class="text-center mt-2">
                             <a href="#" class="mx-1 text-decoration-none text-muted small">UNIVERSITY OF INFORMATION TECHNOLOGY</a><br>
                             <a href="#" class="mx-1 text-decoration-none text-muted small d-block d-md-inline">FACULTY OF COMPUTER NETWORK AND COMMUNICATION</a>
@@ -195,12 +195,37 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <script>
+
+      // Kiểm tra đăng nhập và lấy username
+        fetch('/api/user')
+            .then(res => {
+            if (res.status !== 200) window.location.href = 'login-page.html';
+            return res.json();
+            })
+            .then(data => {
+            if (data.username) {
+                document.getElementById('navbar-username').textContent = `Welcome, ${data.username} !`;
+            }
+            });
+
+        // Xử lý logout
+        document.getElementById('logout-button').onclick = function() {
+            fetch('/api/logout', {method: 'POST'})
+            .then(() => window.location.href = 'login-page.html');
+        };
+
+        // Xử lý sự kiện click nút START
         document.getElementById("start-button").addEventListener("click", function () {
             const interfaceValue = document.getElementById("interface-input").value.trim();
             const timeValue = document.getElementById("time-input").value.trim();
 
             console.log("Interface:", interfaceValue);
             console.log("Time Range:", timeValue);
+
+            // Disable nút START để tránh click nhiều lần
+            const startButton = document.getElementById("start-button");
+            startButton.disabled = true;
+            startButton.textContent = "PROCESSING...";
 
             fetch("/api/capture", {
                 method: "POST",
@@ -215,24 +240,20 @@
             .then(response => response.json())
             .then(data => {
                 console.log("Server response:", data);
+                // Gọi refreshDashboardData() sau khi API hoàn thành
+                refreshDashboardData();
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                // Có thể hiển thị thông báo lỗi cho user
+            })
+            .finally(() => {
+                // Enable lại nút START
+                startButton.disabled = false;
+                startButton.textContent = "START";
             });
         });
-      // Kiểm tra đăng nhập và lấy username
-        fetch('/api/user')
-            .then(res => {
-            if (res.status !== 200) window.location.href = 'login-page.html';
-            return res.json();
-            })
-            .then(data => {
-            if (data.username) {
-                document.getElementById('navbar-username').textContent = `Welcome, ${data.username} !`;
-            }
-            });
-        // Xử lý logout
-        document.getElementById('logout-button').onclick = function() {
-            fetch('/api/logout', {method: 'POST'})
-            .then(() => window.location.href = 'login-page.html');
-        };
+        
         // Dữ liệu và biến phân trang cho từng bảng
         let initialTrafficData = [], initialTrafficPage = 1, initialTrafficPageSize = 5;
         let processedTrafficData = [], processedTrafficPage = 1, processedTrafficPageSize = 5;
@@ -271,6 +292,7 @@
             });
             renderInitialTrafficPagination();
         }
+
         // Hàm phân trang Initial Traffic
         function renderInitialTrafficPagination() {
             const totalPages = Math.ceil(initialTrafficData.length / initialTrafficPageSize);
@@ -324,6 +346,7 @@
             });
             renderProcessedTrafficPagination();
         }
+
         // Hàm phân trang Processed Traffic
         function renderProcessedTrafficPagination() {
             const totalPages = Math.ceil(processedTrafficData.length / processedTrafficPageSize);
@@ -357,6 +380,7 @@
             });
             renderSamplePredictionPagination();
         }
+
         // Hàm phân trang Sample Prediction
         function renderSamplePredictionPagination() {
             const totalPages = Math.ceil(samplePredictionData.length / samplePredictionPageSize);
@@ -410,22 +434,7 @@
                     .then(data => renderDetectionResults(data));
             });
         });
-        // Hàm render phân trang cho bảng Initial Traffic
-        function renderInitialTrafficPagination() {
-            const totalPages = Math.ceil(initialTrafficData.length / initialTrafficPageSize);
-            const pagination = document.getElementById('initial-traffic-pagination');
-            pagination.innerHTML = '';
-            for (let i = 1; i <= totalPages; i++) {
-                const btn = document.createElement('button');
-                btn.textContent = i;
-                btn.className = 'btn btn-sm btn-outline-primary mx-1' + (i === initialTrafficPage ? ' active' : '');
-                btn.onclick = () => {
-                    initialTrafficPage = i;
-                    renderInitialTrafficTable();
-                };
-                pagination.appendChild(btn);
-            }
-        }
+
         // Hàm fetch và render toàn bộ dashboard
         function refreshDashboardData() {
             fetch('/api/raw_network_traffic')

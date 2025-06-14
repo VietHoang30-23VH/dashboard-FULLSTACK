@@ -130,6 +130,5 @@ def api_detection_results(sample_index):
         })
     return jsonify(alerts)
 
-
 if __name__ == '__main__':
     app.run(debug=True, port=8110)
