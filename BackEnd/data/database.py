@@ -1,8 +1,6 @@
 from xmlrpc.client import Boolean
 from sqlalchemy import create_engine, Table, Column, Integer, String, MetaData, insert, select, Float, Boolean
 import hashlib
-import pandas as pd
-from datetime import datetime, timedelta
 import logging
 
 # Thiết lập logging

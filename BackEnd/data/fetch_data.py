@@ -1,7 +1,7 @@
 import pandas as pd
 import logging
 from sqlalchemy import create_engine
-from data.database import prediction_results DATABASE_NAME
+from data.database import prediction_results, DATABASE_NAME
 from sqlalchemy import select, bindparam  # Thêm import cho select và bindparam
 
 # Thiết lập logging
