@@ -15,6 +15,11 @@
         .bg-navbar { background: #1e3a8a; }
         .navbar-brand, .nav-link, .navbar-text { color: #fff !important; }
         .fw-bold { font-weight: bold; }
+        /* Thêm CSS cho hàng được chọn */
+        .selected-row {
+            background-color: #e0e7ff !important;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -179,6 +184,13 @@
                                     <tr>
                                         <th>sample_index</th><th>time</th><th>label</th><th>attack_type</th><th>attack_tool</th>
                                     </tr>
+                                    <tr id="sample-prediction-filter-row">
+                                        <th><input type="text" class="form-control form-control-sm" id="filter-sample_index" placeholder="Lọc..."></th>
+                                        <th><input type="text" class="form-control form-control-sm" id="filter-time" placeholder="Lọc..."></th>
+                                        <th><input type="text" class="form-control form-control-sm" id="filter-label" placeholder="Lọc..."></th>
+                                        <th><input type="text" class="form-control form-control-sm" id="filter-attack_type" placeholder="Lọc..."></th>
+                                        <th><input type="text" class="form-control form-control-sm" id="filter-attack_tool" placeholder="Lọc..."></th>
+                                    </tr>
                                 </thead>
                                 <tbody>
                                     <!-- Dữ liệu sẽ được thêm vào đây thông qua JavaScript -->
@@ -204,7 +216,7 @@
             })
             .then(data => {
             if (data.username) {
-                document.getElementById('navbar-username').textContent = `Welcome, ${data.username} !`;
+                document.getElementById('navbar-username').textContent = Welcome, ${data.username} !;
             }
             });
 
@@ -259,6 +271,15 @@
         let processedTrafficData = [], processedTrafficPage = 1, processedTrafficPageSize = 5;
         let samplePredictionData = [], samplePredictionPage = 1, samplePredictionPageSize = 5;
 
+        // Thêm biến filter cho Sample Prediction
+        let samplePredictionFilter = {
+            sample_index: '',
+            time: '',
+            label: '',
+            attack_type: '',
+            attack_tool: ''
+        };
+
         // Hàm render dữ liệu vào bảng Initial Traffic
         function renderInitialTrafficTable() {
             const tbody = document.querySelector('#initial-traffic-table tbody');
@@ -295,16 +316,59 @@
 
         // Hàm phân trang Initial Traffic
         function renderInitialTrafficPagination() {
-            const totalPages = Math.ceil(initialTrafficData.length / initialTrafficPageSize);
+            const totalPages = Math.max(1, Math.ceil(initialTrafficData.length / initialTrafficPageSize));
             const pagination = document.getElementById('initial-traffic-pagination');
             pagination.innerHTML = '';
-            for (let i = 1; i <= totalPages; i++) {
-                const btn = document.createElement('button');
-                btn.textContent = i;
-                btn.className = 'btn btn-sm btn-outline-primary mx-1' + (i === initialTrafficPage ? ' active' : '');
-                btn.onclick = () => { initialTrafficPage = i; renderInitialTrafficTable(); };
-                pagination.appendChild(btn);
-            }
+
+            const prevBtn = document.createElement('button');
+            prevBtn.textContent = 'Previous';
+            prevBtn.className = 'btn btn-sm btn-outline-primary mx-1';
+            prevBtn.disabled = initialTrafficPage === 1;
+            prevBtn.onclick = () => { 
+                if (initialTrafficPage > 1) {
+                    initialTrafficPage--;
+                    renderInitialTrafficTable();
+                }
+            };
+            pagination.appendChild(prevBtn);
+
+            // Input cho index trang
+            const pageInput = document.createElement('input');
+            pageInput.type = 'number';
+            pageInput.min = 1;
+            pageInput.max = totalPages;
+            pageInput.value = initialTrafficPage;
+            pageInput.style.width = '60px';
+            pageInput.className = 'form-control d-inline-block mx-1';
+            pageInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    let page = parseInt(pageInput.value);
+                    if (!isNaN(page) && page >= 1 && page <= totalPages) {
+                        initialTrafficPage = page;
+                        renderInitialTrafficTable();
+                    } else {
+                        pageInput.value = initialTrafficPage;
+                    }
+                }
+            });
+            pagination.appendChild(pageInput);
+
+            const pageInfo = document.createElement('span');
+            pageInfo.className = 'mx-1 align-self-center';
+            pageInfo.textContent = / ${totalPages};
+            pagination.appendChild(pageInfo);
+
+            const nextBtn = document.createElement('button');
+            nextBtn.textContent = 'Next';
+            nextBtn.className = 'btn btn-sm btn-outline-primary mx-1';
+            nextBtn.disabled = initialTrafficPage === totalPages;
+            nextBtn.onclick = () => { 
+                if (initialTrafficPage < totalPages) {
+                    initialTrafficPage++;
+                    renderInitialTrafficTable();
+                }
+            };
+            pagination.appendChild(nextBtn);
         }
 
         // Hàm render dữ liệu vào bảng Processed Traffic
@@ -349,24 +413,78 @@
 
         // Hàm phân trang Processed Traffic
         function renderProcessedTrafficPagination() {
-            const totalPages = Math.ceil(processedTrafficData.length / processedTrafficPageSize);
+            const totalPages = Math.max(1, Math.ceil(processedTrafficData.length / processedTrafficPageSize));
             const pagination = document.getElementById('processed-traffic-pagination');
             pagination.innerHTML = '';
-            for (let i = 1; i <= totalPages; i++) {
-                const btn = document.createElement('button');
-                btn.textContent = i;
-                btn.className = 'btn btn-sm btn-outline-primary mx-1' + (i === processedTrafficPage ? ' active' : '');
-                btn.onclick = () => { processedTrafficPage = i; renderProcessedTrafficTable(); };
-                pagination.appendChild(btn);
-            }
+
+            const prevBtn = document.createElement('button');
+            prevBtn.textContent = 'Previous';
+            prevBtn.className = 'btn btn-sm btn-outline-primary mx-1';
+            prevBtn.disabled = processedTrafficPage === 1;
+            prevBtn.onclick = () => { 
+                if (processedTrafficPage > 1) {
+                    processedTrafficPage--;
+                    renderProcessedTrafficTable();
+                }
+            };
+            pagination.appendChild(prevBtn);
+
+            // Input cho index trang
+            const pageInput = document.createElement('input');
+            pageInput.type = 'number';
+            pageInput.min = 1;
+            pageInput.max = totalPages;
+            pageInput.value = processedTrafficPage;
+            pageInput.style.width = '60px';
+            pageInput.className = 'form-control d-inline-block mx-1';
+            pageInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    let page = parseInt(pageInput.value);
+                    if (!isNaN(page) && page >= 1 && page <= totalPages) {
+                        processedTrafficPage = page;
+                        renderProcessedTrafficTable();
+                    } else {
+                        pageInput.value = processedTrafficPage;
+                    }
+                }
+            });
+            pagination.appendChild(pageInput);
+
+            const pageInfo = document.createElement('span');
+            pageInfo.className = 'mx-1 align-self-center';
+            pageInfo.textContent = / ${totalPages};
+            pagination.appendChild(pageInfo);
+
+            const nextBtn = document.createElement('button');
+            nextBtn.textContent = 'Next';
+            nextBtn.className = 'btn btn-sm btn-outline-primary mx-1';
+            nextBtn.disabled = processedTrafficPage === totalPages;
+            nextBtn.onclick = () => { 
+                if (processedTrafficPage < totalPages) {
+                    processedTrafficPage++;
+                    renderProcessedTrafficTable();
+                }
+            };
+            pagination.appendChild(nextBtn);
         }
 
-        // Hàm render dữ liệu vào bảng Sample Prediction
+        // Hàm render dữ liệu vào bảng Sample Prediction (có filter)
         function renderSamplePredictionTable() {
             const tbody = document.querySelector('#sample-prediction-table tbody');
             tbody.innerHTML = '';
+            // Lọc dữ liệu trước khi phân trang
+            let filteredData = samplePredictionData.filter(row => {
+                return (!samplePredictionFilter.sample_index || String(row.sample_index).toLowerCase().includes(samplePredictionFilter.sample_index.toLowerCase())) &&
+                       (!samplePredictionFilter.time || String(row.time).toLowerCase().includes(samplePredictionFilter.time.toLowerCase())) &&
+                       (!samplePredictionFilter.label || String(row.label).toLowerCase().includes(samplePredictionFilter.label.toLowerCase())) &&
+                       (!samplePredictionFilter.attack_type || String(row.attack_type).toLowerCase().includes(samplePredictionFilter.attack_type.toLowerCase())) &&
+                       (!samplePredictionFilter.attack_tool || String(row.attack_tool).toLowerCase().includes(samplePredictionFilter.attack_tool.toLowerCase()));
+            });
+            // Cập nhật lại tổng số trang nếu filter làm giảm số dòng
+            const totalPages = Math.max(1, Math.ceil(filteredData.length / samplePredictionPageSize));
+            if (samplePredictionPage > totalPages) samplePredictionPage = totalPages;
             const start = (samplePredictionPage - 1) * samplePredictionPageSize;
-            const pageData = samplePredictionData.slice(start, start + samplePredictionPageSize);
+            const pageData = filteredData.slice(start, start + samplePredictionPageSize);
             pageData.forEach(row => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
@@ -378,21 +496,67 @@
                 `;
                 tbody.appendChild(tr);
             });
-            renderSamplePredictionPagination();
+            // Đảm bảo khi render lại bảng Sample Prediction thì bỏ chọn hàng
+            const samplePredictionTbody = document.querySelector('#sample-prediction-table tbody');
+            samplePredictionTbody.querySelectorAll('tr').forEach(row => row.classList.remove('selected-row'));
+            renderSamplePredictionPagination(filteredData.length);
         }
 
         // Hàm phân trang Sample Prediction
-        function renderSamplePredictionPagination() {
-            const totalPages = Math.ceil(samplePredictionData.length / samplePredictionPageSize);
+        function renderSamplePredictionPagination(filteredLength) {
+            const totalPages = Math.max(1, Math.ceil(filteredLength / samplePredictionPageSize));
             const pagination = document.getElementById('sample-prediction-pagination');
             pagination.innerHTML = '';
-            for (let i = 1; i <= totalPages; i++) {
-                const btn = document.createElement('button');
-                btn.textContent = i;
-                btn.className = 'btn btn-sm btn-outline-primary mx-1' + (i === samplePredictionPage ? ' active' : '');
-                btn.onclick = () => { samplePredictionPage = i; renderSamplePredictionTable(); };
-                pagination.appendChild(btn);
-            }
+
+            const prevBtn = document.createElement('button');
+            prevBtn.textContent = 'Previous';
+            prevBtn.className = 'btn btn-sm btn-outline-primary mx-1';
+            prevBtn.disabled = samplePredictionPage === 1;
+            prevBtn.onclick = () => { 
+                if (samplePredictionPage > 1) {
+                    samplePredictionPage--;
+                    renderSamplePredictionTable();
+                }
+            };
+            pagination.appendChild(prevBtn);
+
+            // Input cho index trang
+            const pageInput = document.createElement('input');
+            pageInput.type = 'number';
+            pageInput.min = 1;
+            pageInput.max = totalPages;
+            pageInput.value = samplePredictionPage;
+            pageInput.style.width = '60px';
+            pageInput.className = 'form-control d-inline-block mx-1';
+            pageInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    let page = parseInt(pageInput.value);
+                    if (!isNaN(page) && page >= 1 && page <= totalPages) {
+                        samplePredictionPage = page;
+                        renderSamplePredictionTable();
+                    } else {
+                        pageInput.value = samplePredictionPage;
+                    }
+                }
+            });
+            pagination.appendChild(pageInput);
+
+            const pageInfo = document.createElement('span');
+            pageInfo.className = 'mx-1 align-self-center';
+            pageInfo.textContent = / ${totalPages};
+            pagination.appendChild(pageInfo);
+
+            const nextBtn = document.createElement('button');
+            nextBtn.textContent = 'Next';
+            nextBtn.className = 'btn btn-sm btn-outline-primary mx-1';
+            nextBtn.disabled = samplePredictionPage === totalPages;
+            nextBtn.onclick = () => { 
+                if (samplePredictionPage < totalPages) {
+                    samplePredictionPage++;
+                    renderSamplePredictionTable();
+                }
+            };
+            pagination.appendChild(nextBtn);
         }
 
         // Hàm render Flow Summary
@@ -424,12 +588,17 @@
         document.addEventListener('DOMContentLoaded', function () {
             refreshDashboardData();
             // Xử lý click trên bảng Sample Prediction
-            document.querySelector('#sample-prediction-table tbody').addEventListener('click', function (e) {
+            const tbody = document.querySelector('#sample-prediction-table tbody');
+            tbody.addEventListener('click', function (e) {
                 let tr = e.target.closest('tr');
                 if (!tr) return;
+                // Bỏ chọn các hàng khác
+                tbody.querySelectorAll('tr').forEach(row => row.classList.remove('selected-row'));
+                // Tô đậm hàng được chọn
+                tr.classList.add('selected-row');
                 let sampleIndex = tr.querySelector('td')?.textContent;
                 if (!sampleIndex) return;
-                fetch(`/api/detection_results/${sampleIndex}`)
+                fetch(/api/detection_results/${sampleIndex})
                     .then(res => res.json())
                     .then(data => renderDetectionResults(data));
             });
@@ -439,7 +608,7 @@
         function refreshDashboardData() {
             fetch('/api/raw_network_traffic')
                 .then(res => res.json())
-                .then(data => { initialTrafficData = data; initialTrafficPage = 1; renderInitialTrafficTable(); });
+                .then (data => { initialTrafficData = data; initialTrafficPage = 1; renderInitialTrafficTable(); });
 
             fetch('/api/processed_network_traffic')
                 .then(res => res.json())
@@ -455,6 +624,17 @@
         }
         window.addEventListener('DOMContentLoaded', function () {
             refreshDashboardData();
+            // Gán sự kiện cho các input filter khi DOMContentLoaded
+            ['sample_index','time','label','attack_type','attack_tool'].forEach(key => {
+                const input = document.getElementById('filter-' + key);
+                if (input) {
+                    input.addEventListener('input', function() {
+                        samplePredictionFilter[key] = input.value;
+                        samplePredictionPage = 1;
+                        renderSamplePredictionTable();
+                    });
+                }
+            });
         });
     </script>
 </body>
