@@ -1,4 +1,4 @@
-from argus_tool import argus_client, argus
+from argus_tool import argus_client
 import logging
 import datetime
 import time
