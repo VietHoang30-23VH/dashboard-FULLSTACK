@@ -1,6 +1,8 @@
-flask
-flask_cors
 sqlalchemy
 pandas
 joblib
 scikit-learn
+fastapi 
+uvicorn[standard]
+hypercorn
+numpy
