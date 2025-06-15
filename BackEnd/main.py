@@ -165,7 +165,6 @@ async def serve_static(filename: str):
 
 
 if __name__ == "__main__":
-    import os
     keyfile = "server.key"
     certfile = "server.crt"
     evm_path = "server.conf"
