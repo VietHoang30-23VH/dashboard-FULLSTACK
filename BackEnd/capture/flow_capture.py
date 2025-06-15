@@ -1,4 +1,4 @@
-from argus_tool import argus_client, argus
+from argus_tool import argus_client
 import logging
 import datetime
 import time
@@ -27,7 +27,7 @@ def run_capture(interface, duration):
     handler.setFormatter(formatter)
     logger.addHandler(handler)
 
-    # Khởi động Argus server
+   """ # Khởi động Argus server
     started, process = argus.start_argus(
         path_to_argus='/usr/local/sbin/argus',
         interface=interface,
@@ -44,7 +44,7 @@ def run_capture(interface, duration):
             if is_running:
                 logger.info(f"The argus server is running PID = {pid}.")
                 break
-    
+    """
     # Ghi lại thời gian bắt đầu
     start_time = datetime.datetime.now()
     print('-' * 210)
@@ -53,7 +53,7 @@ def run_capture(interface, duration):
     # Lấy dữ liệu mạng
     error, df_metric = argus_client.get_metric(
         path_to_ra="/usr/local/bin/ra",
-        server="localhost",
+        server="argus-server",
         port=561,
         duration_in_seconds=duration,
     )
@@ -134,9 +134,9 @@ def run_capture(interface, duration):
 
         # Tạo DataFrame cuối cùng đúng thứ tự
         df_final = df[required_columns]
-        print("[+] Proccessed Traffic: ")
-        print(df_final)
-        print("-"*210)
+        #print("[+] Proccessed Traffic: ")
+        #print(df_final)
+        #print("-"*210)
 
         # Điền giá trị NaN bằng 0
         df_final = df_final.fillna(0)
@@ -175,7 +175,7 @@ def run_capture(interface, duration):
         else:
             logger.error(message)               
 
-    # Dừng Argus server
+    """# Dừng Argus server
     if started:
         argus.kill_argus(process)
     else:
@@ -188,3 +188,4 @@ def run_capture(interface, duration):
         if not is_running:
             logger.info("The argus server is stopped.")
             break
+    """

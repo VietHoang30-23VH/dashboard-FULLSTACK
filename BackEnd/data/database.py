@@ -1,5 +1,4 @@
 from xmlrpc.client import Boolean
-
 from sqlalchemy import create_engine, Table, Column, Integer, String, MetaData, insert, select, Float, Boolean
 import hashlib
 import pandas as pd
@@ -14,8 +13,9 @@ formatter = logging.Formatter('[%(asctime)s][%(name)s][%(levelname)s] %(message)
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
+DATABASE_NAME: str = "sqlite:////stored/5g_monitor.db"
 # Tạo kết nối đến cơ sở dữ liệu SQLite
-engine = create_engine('sqlite:///5g_monitor.db')
+engine = create_engine(DATABASE_NAME)
 metadata = MetaData()
 
 # Định nghĩa bảng users

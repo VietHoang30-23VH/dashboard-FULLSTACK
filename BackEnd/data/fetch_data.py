@@ -1,7 +1,7 @@
 import pandas as pd
 import logging
 from sqlalchemy import create_engine
-from data.database import prediction_results
+from data.database import prediction_results DATABASE_NAME
 from sqlalchemy import select, bindparam  # Thêm import cho select và bindparam
 
 # Thiết lập logging
@@ -13,7 +13,7 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 
 # Kết nối tới SQLite database
-engine = create_engine('sqlite:///5g_monitor.db')
+engine = create_engine(DATABASE_NAME)
 
 # Hàm load dữ liệu từ bảng raw_network_traffic
 def load_raw_network_traffic():
